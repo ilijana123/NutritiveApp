@@ -1,0 +1,24 @@
+package com.example.nutritive_app.entity
+
+import jakarta.persistence.*
+
+@Entity
+@Table(name = "allergen")
+data class Allergen(
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    @Column(name="name", nullable = false)
+    var name: String,
+
+    @ManyToMany(mappedBy = "allergens")
+    val users: MutableSet<User> = mutableSetOf(),
+
+    @ManyToMany
+    @JoinTable(
+        name = "allergen_products",
+        joinColumns = [JoinColumn(name = "allergen_id")],
+        inverseJoinColumns = [JoinColumn(name = "product_id")]
+    )
+    val products: MutableSet<Product> = mutableSetOf()
+)
