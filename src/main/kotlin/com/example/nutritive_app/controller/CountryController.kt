@@ -1,38 +1,29 @@
 package com.example.nutritive_app.controller
 
 import com.example.nutritive_app.entity.Country
-import com.example.nutritive_app.repository.CountryRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import com.example.nutritive_app.service.CountryService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/countries")
-class CountryController {
+class CountryController(private val countryService: CountryService) {
 
-    @Autowired
-    lateinit var countryRepository: CountryRepository
+    @GetMapping
+    fun getAllCountries(): List<Country> = countryService.getAllCountries()
+
+    @GetMapping("/countries/{id}")
+    fun getCountriesById(@PathVariable("id") countryId: Long): Country =
+        countryService.getCountriesById(countryId)
 
     @PostMapping
-    fun createCountry(@RequestBody country: Country): Country {
-        return countryRepository.save(country)
-    }
+    fun createCountry(@RequestBody payload: Country): Country = countryService.createCountry(payload)
 
-    @PutMapping("/{id}")
-    fun updateCountry(@PathVariable id: Long, @RequestBody updated: Country): ResponseEntity<Country> {
-        return countryRepository.findById(id).map { existing ->
-            existing.name = updated.name
-            ResponseEntity.ok(countryRepository.save(existing))
-        }.orElse(ResponseEntity.notFound().build())
-    }
+    @PutMapping("/countries/{id}")
+    fun updateCountryById(@PathVariable("id") countryId: Long, @RequestBody payload: Country): Country =
+        countryService.updateCountryById(countryId, payload)
 
-    @DeleteMapping("/{id}")
-    fun deleteCountry(@PathVariable id: Long): ResponseEntity<Void> {
-        return countryRepository.findById(id).map { country ->
-            println("Country found $country and deleted")
-            countryRepository.delete(country)
-            ResponseEntity<Void>(HttpStatus.NO_CONTENT)
-        }.orElse(ResponseEntity.notFound().build())
-    }
+
+    @DeleteMapping("/countries/{id}")
+    fun deleteCountriesById(@PathVariable("id") countryId: Long): Unit =
+        countryService.deleteCountriesById(countryId)
 }

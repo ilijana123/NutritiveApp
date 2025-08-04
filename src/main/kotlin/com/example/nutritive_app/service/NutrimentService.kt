@@ -2,7 +2,9 @@ package com.example.nutritive_app.service
 
 import com.example.nutritive_app.entity.Nutriment
 import com.example.nutritive_app.dto.NutrimentDTO
+import com.example.nutritive_app.exception.NutrimentNotFoundException
 import com.example.nutritive_app.repository.NutrimentRepository
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 
 @Service
@@ -11,15 +13,15 @@ class NutrimentService(
 ) {
     fun getAllNutriments(): List<Nutriment> = nutrimentRepository.findAll()
 
-    fun getNutrimentById(id: Long): Nutriment =
+    fun getNutrimentsById(id: Long): Nutriment =
         nutrimentRepository.findById(id).orElseThrow {
             NoSuchElementException("Nutriment with id $id not found")
         }
 
     fun createNutriment(nutriment: Nutriment): Nutriment = nutrimentRepository.save(nutriment)
 
-    fun updateNutriment(id: Long, updated: Nutriment): Nutriment {
-        val existing = getNutrimentById(id)
+    fun updateNutrimentsById(id: Long, updated: Nutriment): Nutriment {
+        val existing = getNutrimentsById(id)
         val toSave = existing.copy(
             carbohydrates = updated.carbohydrates,
             carbohydrates_100g = updated.carbohydrates_100g,
@@ -43,7 +45,12 @@ class NutrimentService(
         return nutrimentRepository.save(toSave)
     }
 
-    fun deleteNutriment(id: Long) = nutrimentRepository.deleteById(id)
+    fun deleteNutrimentsById(nutrimentId: Long) {
+        return if (nutrimentRepository.existsById(nutrimentId)) {
+            nutrimentRepository.deleteById(nutrimentId)
+        } else throw NutrimentNotFoundException(HttpStatus.NOT_FOUND, "No matching employee was found")
+    }
+
     fun findOrCreate(nutrimentsDTO: NutrimentDTO?): Nutriment {
         val nutriment = Nutriment(
             carbohydrates = nutrimentsDTO?.carbohydrates,

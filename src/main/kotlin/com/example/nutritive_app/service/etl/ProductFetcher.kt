@@ -83,7 +83,6 @@ class ProductFetcher(
                 var counter = 0
                 lines.forEach { line ->
                     try {
-                        val jsonNode = objectMapper.readTree(line)
                         val productDto = objectMapper.readValue(line, ProductDTO::class.java)
                         productImportService.import(productDto)
                         counter++

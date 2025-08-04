@@ -5,23 +5,25 @@ import com.example.nutritive_app.entity.Nutriscore
 import com.example.nutritive_app.repository.NutriscoreRepository
 import org.json.JSONObject
 import org.springframework.stereotype.Service
+import org.springframework.http.HttpStatus
+import com.example.nutritive_app.exception.NutriscoreNotFoundException
 
 @Service
 class NutriscoreService(
     private val nutriscoreRepository: NutriscoreRepository
 ) {
 
-    fun getAll(): List<Nutriscore> = nutriscoreRepository.findAll()
+    fun getAllNutriscores(): List<Nutriscore> = nutriscoreRepository.findAll()
 
-    fun getById(id: Long): Nutriscore =
+    fun getNutriscoresById(id: Long): Nutriscore =
         nutriscoreRepository.findById(id).orElseThrow {
             NoSuchElementException("Nutriscore with id $id not found")
         }
 
-    fun create(nutriscore: Nutriscore): Nutriscore = nutriscoreRepository.save(nutriscore)
+    fun createNutriscore(nutriscore: Nutriscore): Nutriscore = nutriscoreRepository.save(nutriscore)
 
-    fun update(id: Long, updated: Nutriscore): Nutriscore {
-        val existing = getById(id)
+    fun updateNutriscoreById(id: Long, updated: Nutriscore): Nutriscore {
+        val existing = getNutriscoresById(id)
         val toSave = existing.copy(
             grade = updated.grade,
             score = updated.score,
@@ -31,7 +33,12 @@ class NutriscoreService(
         return nutriscoreRepository.save(toSave)
     }
 
-    fun delete(id: Long) = nutriscoreRepository.deleteById(id)
+    fun deleteNutriscoresById(nutriscoreId: Long) {
+        return if(nutriscoreRepository.existsById(nutriscoreId)) {
+            nutriscoreRepository.deleteById(nutriscoreId)
+        } else throw NutriscoreNotFoundException(HttpStatus.NOT_FOUND, "No matching nutriscore was found")
+    }
+
     fun findOrCreate(dto: NutriscoreDTO?): Nutriscore {
         val nutriscore = Nutriscore(
             grade = dto?.grade,

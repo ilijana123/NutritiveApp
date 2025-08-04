@@ -3,7 +3,6 @@ package com.example.nutritive_app.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "user")
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,19 +18,19 @@ data class User(
     @Column(name = "password", nullable = false)
     var password: String,
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_allergens",
-        joinColumns = [JoinColumn(name = "user_id")],
-        inverseJoinColumns = [JoinColumn(name = "allergen_id")]
-    )
-    val allergens: MutableSet<Allergen> = mutableSetOf(),
+//    @ManyToMany
+//    @JoinTable(
+//        name = "user_allergens",
+//        joinColumns = [JoinColumn(name = "user_id")],
+//        inverseJoinColumns = [JoinColumn(name = "allergen_id")]
+//    )
+//    val allergens: MutableSet<Allergen> = mutableSetOf(),
 
-    @ManyToMany
-    @JoinTable(
-        name = "user_products",
-        joinColumns = [JoinColumn(name = "user_id")],
-        inverseJoinColumns = [JoinColumn(name = "product_id")]
-    )
-    val products: MutableSet<Product> = mutableSetOf()
+//    @ManyToMany
+//    @JoinTable(
+//        name = "user_products",
+//        joinColumns = [JoinColumn(name = "user_id")],
+//        inverseJoinColumns = [JoinColumn(name = "product_id")]
+//    )
+//    val products: MutableSet<Product> = mutableSetOf()
 )

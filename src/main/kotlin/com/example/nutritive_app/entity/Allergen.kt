@@ -3,7 +3,6 @@ package com.example.nutritive_app.entity
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "allergen")
 data class Allergen(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,8 +10,8 @@ data class Allergen(
     @Column(name="name", nullable = false)
     var name: String,
 
-    @ManyToMany(mappedBy = "allergens")
-    val users: MutableSet<User> = mutableSetOf(),
+//    @ManyToMany(mappedBy = "allergens")
+//    val users: MutableSet<User> = mutableSetOf(),
 
     @ManyToMany
     @JoinTable(

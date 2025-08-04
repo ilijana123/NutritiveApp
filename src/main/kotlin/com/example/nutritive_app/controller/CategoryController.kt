@@ -1,38 +1,29 @@
 package com.example.nutritive_app.controller
 
 import com.example.nutritive_app.entity.Category
-import com.example.nutritive_app.repository.CategoryRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import com.example.nutritive_app.service.CategoryService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/categories")
-class CategoryController {
+class CategoryController(private val categoryService: CategoryService) {
 
-    @Autowired
-    lateinit var categoryRepository: CategoryRepository
+    @GetMapping
+    fun getAllCategories(): List<Category> = categoryService.getAllCategories()
+
+    @GetMapping("/categories/{id}")
+    fun getCategoriesById(@PathVariable("id") categoryId: Long): Category =
+        categoryService.getCategoriesById(categoryId)
 
     @PostMapping
-    fun createCategory(@RequestBody category: Category): Category {
-        return categoryRepository.save(category)
-    }
+    fun createCategory(@RequestBody payload: Category): Category = categoryService.createCategory(payload)
 
-    @PutMapping("/{id}")
-    fun updateCategory(@PathVariable id: Long, @RequestBody updated: Category): ResponseEntity<Category> {
-        return categoryRepository.findById(id).map { existing ->
-            existing.name = updated.name
-            ResponseEntity.ok(categoryRepository.save(existing))
-        }.orElse(ResponseEntity.notFound().build())
-    }
+    @PutMapping("/categories/{id}")
+    fun updateCategoryById(@PathVariable("id") categoryId: Long, @RequestBody payload: Category): Category =
+        categoryService.updateCategoryById(categoryId, payload)
 
-    @DeleteMapping("/{id}")
-    fun deleteCategory(@PathVariable id: Long): ResponseEntity<Void> {
-        return categoryRepository.findById(id).map { category ->
-            println("Category found $category and deleted")
-            categoryRepository.delete(category)
-            ResponseEntity<Void>(HttpStatus.NO_CONTENT)
-        }.orElse(ResponseEntity.notFound().build())
-    }
+
+    @DeleteMapping("/categories/{id}")
+    fun deleteCategoriesById(@PathVariable("id") categoryId: Long): Unit =
+        categoryService.deleteCategoriesById(categoryId)
 }

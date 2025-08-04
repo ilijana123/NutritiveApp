@@ -1,38 +1,29 @@
 package com.example.nutritive_app.controller
 
 import com.example.nutritive_app.entity.Allergen
-import com.example.nutritive_app.repository.AllergenRepository
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import com.example.nutritive_app.service.AllergenService
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/allergens")
-class AllergenController {
+class AllergenController(private val allergenService: AllergenService) {
 
-    @Autowired
-    lateinit var allergenRepository: AllergenRepository
+    @GetMapping
+    fun getAllAllergens(): List<Allergen> = allergenService.getAllAllergens()
+
+    @GetMapping("/allergens/{id}")
+    fun getAllergensById(@PathVariable("id") allergenId: Long): Allergen =
+        allergenService.getAllergensById(allergenId)
 
     @PostMapping
-    fun createAllergen(@RequestBody allergen: Allergen): Allergen {
-        return allergenRepository.save(allergen)
-    }
+    fun createAllergen(@RequestBody payload: Allergen): Allergen = allergenService.createAllergen(payload)
 
-    @PutMapping("/{id}")
-    fun updateAllergen(@PathVariable id: Long, @RequestBody updated: Allergen): ResponseEntity<Allergen> {
-        return allergenRepository.findById(id).map { existing ->
-            val updatedAllergen = existing.copy(name = updated.name)
-            ResponseEntity.ok(allergenRepository.save(updatedAllergen))
-        }.orElse(ResponseEntity.notFound().build())
-    }
+    @PutMapping("/allergens/{id}")
+    fun updateAllergenById(@PathVariable("id") allergenId: Long, @RequestBody payload: Allergen): Allergen =
+        allergenService.updateAllergenById(allergenId, payload)
 
-    @DeleteMapping("/{id}")
-    fun deleteAllergen(@PathVariable id: Long) {
-        allergenRepository.findById(id).map { allergen ->
-            print("Allergen found $allergen and deleted")
-            allergenRepository.delete(allergen)
-            ResponseEntity<Void>(HttpStatus.NO_CONTENT)
-        }.orElse(ResponseEntity.notFound().build())
-    }
+
+    @DeleteMapping("/allergens/{id}")
+    fun deleteAllergensById(@PathVariable("id") allergenId: Long): Unit =
+        allergenService.deleteAllergensById(allergenId)
 }
