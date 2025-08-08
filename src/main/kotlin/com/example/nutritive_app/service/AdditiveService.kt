@@ -38,7 +38,8 @@ class AdditiveService(private val additiveRepository: AdditiveRepository) {
     }
 
     fun findOrCreateAll(names: List<String>?): MutableSet<Additive> {
-        return names.orEmpty()
+        if (names == null) return mutableSetOf()
+        return names
             .filter { it.startsWith("en:")}
             .map { findOrCreate(it.removePrefix("en:").trim())}
             .toMutableSet()

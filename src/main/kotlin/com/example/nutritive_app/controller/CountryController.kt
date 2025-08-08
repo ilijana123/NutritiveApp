@@ -11,19 +11,19 @@ class CountryController(private val countryService: CountryService) {
     @GetMapping
     fun getAllCountries(): List<Country> = countryService.getAllCountries()
 
-    @GetMapping("/countries/{id}")
+    @GetMapping("/{id}")
     fun getCountriesById(@PathVariable("id") countryId: Long): Country =
         countryService.getCountriesById(countryId)
 
     @PostMapping
     fun createCountry(@RequestBody payload: Country): Country = countryService.createCountry(payload)
 
-    @PutMapping("/countries/{id}")
+    @PutMapping("/{id}")
     fun updateCountryById(@PathVariable("id") countryId: Long, @RequestBody payload: Country): Country =
         countryService.updateCountryById(countryId, payload)
 
 
-    @DeleteMapping("/countries/{id}")
+    @DeleteMapping("/{id}")
     fun deleteCountriesById(@PathVariable("id") countryId: Long): Unit =
         countryService.deleteCountriesById(countryId)
 }

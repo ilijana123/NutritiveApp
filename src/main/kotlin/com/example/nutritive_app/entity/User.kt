@@ -6,7 +6,7 @@ import jakarta.persistence.*
 data class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long? = null,
     @Column(name = "username", nullable = false, unique = true)
     val username: String,
     @Column(name = "first_name", nullable = false)
@@ -18,19 +18,24 @@ data class User(
     @Column(name = "password", nullable = false)
     var password: String,
 
-//    @ManyToMany
-//    @JoinTable(
-//        name = "user_allergens",
-//        joinColumns = [JoinColumn(name = "user_id")],
-//        inverseJoinColumns = [JoinColumn(name = "allergen_id")]
-//    )
-//    val allergens: MutableSet<Allergen> = mutableSetOf(),
+    @ManyToMany
+    @JoinTable(
+        name = "user_allergens",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "allergen_id")]
+    )
+    val allergens: MutableSet<Allergen> = mutableSetOf(),
 
-//    @ManyToMany
-//    @JoinTable(
-//        name = "user_products",
-//        joinColumns = [JoinColumn(name = "user_id")],
-//        inverseJoinColumns = [JoinColumn(name = "product_id")]
-//    )
-//    val products: MutableSet<Product> = mutableSetOf()
+    @ManyToMany
+    @JoinTable(
+        name = "user_products",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "product_id")]
+    )
+    val products: MutableSet<Product> = mutableSetOf(),
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = [JoinColumn(name = "user_id")])
+    @Column(name = "role")
+    val roles: Set<String> = setOf()
 )

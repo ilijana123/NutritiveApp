@@ -1,47 +1,62 @@
 package com.example.nutritive_app.controller
 
-import com.example.nutritive_app.repository.UserRepository
-import com.example.nutritive_app.entity.User
-import org.springframework.beans.factory.annotation.Autowired
+import com.example.nutritive_app.dto.request.AssignRoleRequest
+import com.example.nutritive_app.dto.request.LoginRequest
+import com.example.nutritive_app.dto.request.SignUpRequest
+import com.example.nutritive_app.dto.response.AuthResponse
+import com.example.nutritive_app.jwt.JwtUtil
+import com.example.nutritive_app.service.UserService
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/users")
-class UserController {
-    @Autowired
-    lateinit var userRepository: UserRepository
+@RequestMapping("/api/users")
+class UserController(
+    private val userService: UserService,
+    private val jwtUtil: JwtUtil,
+    private val authenticationManager: AuthenticationManager
+) {
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
-    @GetMapping
-    fun getAllUsers(): List<User> = userRepository.findAll()
+    @PostMapping("/create")
+    fun createUser(@RequestBody request: SignUpRequest): ResponseEntity<String> {
+        val user = userService.createUser(request)
+        logger.info("Created user with email ${user.email}")
+        return ResponseEntity.ok("User ${user.email} created")
+    }
 
-    @GetMapping("/{id}")
-    fun getUserById(@PathVariable id: Long): ResponseEntity<User> =
-        userRepository.findById(id).map { user ->
-            ResponseEntity.ok(user)
-        }.orElse(ResponseEntity.notFound().build())
+    @PostMapping("/{userId}/roles")
+    fun assignRoleToUser(@PathVariable userId: Long, @RequestParam role: AssignRoleRequest): ResponseEntity<String> {
+        userService.assignRoleToUser(userId, role.roleId.toString())
+        return ResponseEntity.ok("User with id $userId has been assigned the role $role")
+    }
 
-    @PostMapping
-    fun createUser(@RequestBody user: User): User = userRepository.save(user)
+    @GetMapping("/{userId}/roles")
+    fun getUserRoles(@PathVariable userId: Long): ResponseEntity<Set<String>> {
+        val roles = userService.getUserRoles(userId)
+        return ResponseEntity.ok(roles)
+    }
 
-    @PutMapping("/{id}")
-    fun updateUser(@PathVariable id: Long, @RequestBody updatedUser: User): ResponseEntity<User> =
-        userRepository.findById(id).map { existingUser ->
-            val userToUpdate = existingUser.copy(
-                firstName = updatedUser.firstName,
-                lastName = updatedUser.lastName,
-                email = updatedUser.email,
-                password = updatedUser.password
+    @PostMapping("/login")
+    fun login(@RequestBody request: LoginRequest): ResponseEntity<*> {
+        return try {
+            val auth: Authentication = authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(request.email, request.password)
             )
-            ResponseEntity.ok(userRepository.save(userToUpdate))
-        }.orElse(ResponseEntity.notFound().build())
 
-    @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable id: Long): ResponseEntity<Void> =
-        userRepository.findById(id).map { user ->
-            print("User found $user and deleted")
-            userRepository.delete(user)
-            ResponseEntity<Void>(HttpStatus.NO_CONTENT)
-        }.orElse(ResponseEntity.notFound().build())
+            val userDetails = auth.principal as UserDetails
+            val token = jwtUtil.generateToken(userDetails.username)
+
+            ResponseEntity.ok(AuthResponse(userDetails.username, token))
+        } catch (_: BadCredentialsException) {
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password")
+        }
+    }
 }

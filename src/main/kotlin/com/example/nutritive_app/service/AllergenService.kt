@@ -39,7 +39,8 @@ class AllergenService(private val allergenRepository: AllergenRepository) {
     }
 
     fun findOrCreateAll(names: List<String>?): MutableSet<Allergen> {
-        return names.orEmpty()
+        if (names == null) return mutableSetOf()
+        return names
             .filter { it.startsWith("en:")}
             .map { findOrCreate(it.removePrefix("en:")
                 .trim()

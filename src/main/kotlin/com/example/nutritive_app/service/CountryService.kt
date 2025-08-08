@@ -39,7 +39,8 @@ class CountryService(private val countryRepository: CountryRepository) {
     }
 
     fun findOrCreateAll(names: List<String>?): MutableSet<Country> {
-        return names.orEmpty()
+        if (names == null) return mutableSetOf()
+        return names
             .filter { it.startsWith("en:")}
             .map { findOrCreate(it.removePrefix("en:")
                 .trim()

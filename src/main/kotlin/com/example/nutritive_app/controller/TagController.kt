@@ -8,21 +8,21 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/tags")
 class TagController(val tagService: TagService) {
 
-    @GetMapping("/tags")
+    @GetMapping
     fun getAllTags(): List<Tag> = tagService.getAllTags()
 
-    @GetMapping("/tags/{id}")
+    @GetMapping("/{id}")
     fun getTagsById(@PathVariable("id") tagId: Long): Tag =
         tagService.getTagsById(tagId)
 
-    @PostMapping("/tags")
+    @PostMapping("/create")
     fun createTag(@RequestBody payload: Tag): Tag = tagService.createTag(payload)
 
-    @PutMapping("/tags/{id}")
+    @PutMapping("/{id}")
     fun updateTagById(@PathVariable("id") tagId: Long, @RequestBody payload: Tag): Tag =
         tagService.updateTagById(tagId, payload)
 
-    @DeleteMapping("/tags/{id}")
+    @DeleteMapping("/{id}")
     fun deleteTagsById(@PathVariable("id") tagId: Long): Unit =
         tagService.deleteTagsById(tagId)
 }

@@ -11,19 +11,19 @@ class AllergenController(private val allergenService: AllergenService) {
     @GetMapping
     fun getAllAllergens(): List<Allergen> = allergenService.getAllAllergens()
 
-    @GetMapping("/allergens/{id}")
+    @GetMapping("/{id}")
     fun getAllergensById(@PathVariable("id") allergenId: Long): Allergen =
         allergenService.getAllergensById(allergenId)
 
     @PostMapping
     fun createAllergen(@RequestBody payload: Allergen): Allergen = allergenService.createAllergen(payload)
 
-    @PutMapping("/allergens/{id}")
+    @PutMapping("/{id}")
     fun updateAllergenById(@PathVariable("id") allergenId: Long, @RequestBody payload: Allergen): Allergen =
         allergenService.updateAllergenById(allergenId, payload)
 
 
-    @DeleteMapping("/allergens/{id}")
+    @DeleteMapping("/{id}")
     fun deleteAllergensById(@PathVariable("id") allergenId: Long): Unit =
         allergenService.deleteAllergensById(allergenId)
 }

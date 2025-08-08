@@ -11,19 +11,19 @@ class NutrimentController(private val nutrimentService: NutrimentService) {
     @GetMapping
     fun getAllNutriments(): List<Nutriment> = nutrimentService.getAllNutriments()
 
-    @GetMapping("/nutriments/{id}")
+    @GetMapping("/{id}")
     fun getNutrimentsById(@PathVariable("id") nutrimentId: Long): Nutriment =
         nutrimentService.getNutrimentsById(nutrimentId)
 
     @PostMapping
     fun createNutriment(@RequestBody payload: Nutriment): Nutriment = nutrimentService.createNutriment(payload)
 
-    @PutMapping("/nutriments/{id}")
+    @PutMapping("/{id}")
     fun updateNutrimentById(@PathVariable("id") nutrimentId: Long, @RequestBody payload: Nutriment): Nutriment =
         nutrimentService.updateNutrimentsById(nutrimentId, payload)
 
 
-    @DeleteMapping("/nutriments/{id}")
+    @DeleteMapping("/{id}")
     fun deleteNutrimentsById(@PathVariable("id") nutrimentId: Long): Unit =
         nutrimentService.deleteNutrimentsById(nutrimentId)
 }

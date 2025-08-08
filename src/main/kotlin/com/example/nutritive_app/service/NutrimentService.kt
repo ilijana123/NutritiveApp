@@ -51,31 +51,28 @@ class NutrimentService(
         } else throw NutrimentNotFoundException(HttpStatus.NOT_FOUND, "No matching employee was found")
     }
 
-    fun findOrCreate(nutrimentsDTO: NutrimentDTO?): Nutriment {
+    fun findOrCreate(nutrimentsDTO: NutrimentDTO?): Nutriment? {
+        if (nutrimentsDTO == null) return null
         val nutriment = Nutriment(
-            carbohydrates = nutrimentsDTO?.carbohydrates,
-            carbohydrates_100g = nutrimentsDTO?.carbohydrates_100g,
-            energy = nutrimentsDTO?.energy,
-            energy_kj_100g = nutrimentsDTO?.energy_kj_100g,
-            fat = nutrimentsDTO?.fat,
-            fat_100g = nutrimentsDTO?.fat_100g,
-            fiber = nutrimentsDTO?.fiber,
-            fiber_100g = nutrimentsDTO?.fiber_100g,
-            proteins = nutrimentsDTO?.proteins,
-            proteins_100g = nutrimentsDTO?.proteins_100g,
-            salt = nutrimentsDTO?.salt,
-            salt_100g = nutrimentsDTO?.salt_100g,
-            saturated_fat = nutrimentsDTO?.saturated_fat,
-            saturated_fat_100g = nutrimentsDTO?.saturated_fat_100g,
-            sodium = nutrimentsDTO?.sodium,
-            sodium_100g = nutrimentsDTO?.sodium_100g,
-            sugars = nutrimentsDTO?.sugars,
-            sugars_100g = nutrimentsDTO?.sugars_100g
+            carbohydrates = nutrimentsDTO.carbohydrates,
+            carbohydrates_100g = nutrimentsDTO.carbohydrates_100g,
+            energy = nutrimentsDTO.energy,
+            energy_kj_100g = nutrimentsDTO.energy_kj_100g,
+            fat = nutrimentsDTO.fat,
+            fat_100g = nutrimentsDTO.fat_100g,
+            fiber = nutrimentsDTO .fiber,
+            fiber_100g = nutrimentsDTO.fiber_100g,
+            proteins = nutrimentsDTO.proteins,
+            proteins_100g = nutrimentsDTO.proteins_100g,
+            salt = nutrimentsDTO.salt,
+            salt_100g = nutrimentsDTO.salt_100g,
+            saturated_fat = nutrimentsDTO.saturated_fat,
+            saturated_fat_100g = nutrimentsDTO.saturated_fat_100g,
+            sodium = nutrimentsDTO.sodium,
+            sodium_100g = nutrimentsDTO.sodium_100g,
+            sugars = nutrimentsDTO.sugars,
+            sugars_100g = nutrimentsDTO.sugars_100g
         )
         return nutrimentRepository.save(nutriment)
-    }
-
-    fun findOrCreateAll(nutrimentsDTO: NutrimentDTO?): MutableSet<Nutriment> {
-        return mutableSetOf(findOrCreate(nutrimentsDTO))
     }
 }

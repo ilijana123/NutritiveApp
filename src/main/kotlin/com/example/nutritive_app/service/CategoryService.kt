@@ -39,7 +39,8 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
     }
 
     fun findOrCreateAll(names: List<String>?): MutableSet<Category> {
-        return names.orEmpty()
+        if (names == null) return mutableSetOf()
+        return names
             .filter { it.startsWith("en:")}
             .map { findOrCreate(it.removePrefix("en:")
                 .trim()

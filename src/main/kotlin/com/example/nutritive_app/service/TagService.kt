@@ -38,7 +38,8 @@ class TagService(private val tagRepository: TagRepository) {
     }
 
     fun findOrCreateAll(names: List<String>?): MutableSet<Tag> {
-        return names.orEmpty()
+        if (names == null) return mutableSetOf()
+        return names
             .filter { it.startsWith("en:")}
             .map { findOrCreate(it.removePrefix("en:")
             .trim()

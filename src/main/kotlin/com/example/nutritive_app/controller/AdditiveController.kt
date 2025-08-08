@@ -11,19 +11,19 @@ class AdditiveController(private val additiveService: AdditiveService) {
     @GetMapping
     fun getAllAdditives(): List<Additive> = additiveService.getAllAdditives()
 
-    @GetMapping("/additives/{id}")
+    @GetMapping("/{id}")
     fun getAdditivesById(@PathVariable("id") additiveId: Long): Additive =
         additiveService.getAdditivesById(additiveId)
 
     @PostMapping
     fun createAdditive(@RequestBody payload: Additive): Additive = additiveService.createAdditive(payload)
 
-    @PutMapping("/additives/{id}")
+    @PutMapping("/{id}")
     fun updateAdditiveById(@PathVariable("id") additiveId: Long, @RequestBody payload: Additive): Additive =
         additiveService.updateAdditiveById(additiveId, payload)
 
 
-    @DeleteMapping("/additives/{id}")
+    @DeleteMapping("/{id}")
     fun deleteAdditivesById(@PathVariable("id") additiveId: Long): Unit =
         additiveService.deleteAdditivesById(additiveId)
 }
