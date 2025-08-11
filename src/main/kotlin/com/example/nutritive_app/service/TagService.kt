@@ -20,7 +20,7 @@ class TagService(private val tagRepository: TagRepository) {
         return if (tagRepository.existsById(tagId)) {
             tagRepository.save(
                 Tag(
-                    id = tag.id,
+                    id = tagId,
                     name = tag.name,
                     products = tag.products,
                 )
@@ -46,5 +46,13 @@ class TagService(private val tagRepository: TagRepository) {
             .split('-')
             .joinToString(" ") { word -> word.replaceFirstChar { it.uppercaseChar() } })}
             .toMutableSet()
+    }
+
+    fun save(tag: Tag): Tag {
+        return tagRepository.save(tag)
+    }
+
+    fun saveAll(tags: MutableSet<Tag>): MutableList<Tag> {
+        return tagRepository.saveAll(tags)
     }
 }

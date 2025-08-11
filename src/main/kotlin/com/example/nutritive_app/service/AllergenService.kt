@@ -20,7 +20,7 @@ class AllergenService(private val allergenRepository: AllergenRepository) {
         return if (allergenRepository.existsById(allergenId)) {
             allergenRepository.save(
                 Allergen(
-                    id = allergen.id,
+                    id = allergenId,
                     name = allergen.name,
                     products = allergen.products,
                 )
@@ -47,5 +47,9 @@ class AllergenService(private val allergenRepository: AllergenRepository) {
                 .split('-')
                 .joinToString(" ") { word -> word.replaceFirstChar { it.uppercaseChar() } })}
             .toMutableSet()
+    }
+
+    fun saveAll(names: List<Allergen>): MutableList<Allergen> {
+        return allergenRepository.saveAll(names)
     }
 }

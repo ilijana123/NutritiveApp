@@ -20,7 +20,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
         return if (categoryRepository.existsById(categoryId)) {
             categoryRepository.save(
                 Category(
-                    id = category.id,
+                    id = categoryId,
                     name = category.name,
                     products = category.products,
                 )
@@ -49,4 +49,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
             .toMutableSet()
     }
 
+    fun saveAll(names: List<Category>): MutableList<Category> {
+        return categoryRepository.saveAll(names)
+    }
 }

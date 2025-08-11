@@ -19,7 +19,7 @@ class AdditiveService(private val additiveRepository: AdditiveRepository) {
         return if (additiveRepository.existsById(additiveId)) {
             additiveRepository.save(
                 Additive(
-                    id = additive.id,
+                    id = additiveId,
                     name = additive.name,
                     products = additive.products,
                 )
@@ -43,5 +43,9 @@ class AdditiveService(private val additiveRepository: AdditiveRepository) {
             .filter { it.startsWith("en:")}
             .map { findOrCreate(it.removePrefix("en:").trim())}
             .toMutableSet()
+    }
+
+    fun saveAll(names: List<Additive>): MutableList<Additive> {
+        return additiveRepository.saveAll(names)
     }
 }

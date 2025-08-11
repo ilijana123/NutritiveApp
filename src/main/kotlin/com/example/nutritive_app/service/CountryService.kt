@@ -20,7 +20,7 @@ class CountryService(private val countryRepository: CountryRepository) {
         return if (countryRepository.existsById(countryId)) {
             countryRepository.save(
                 Country(
-                    id = country.id,
+                    id = countryId,
                     name = country.name,
                     products = country.products,
                 )
@@ -47,5 +47,9 @@ class CountryService(private val countryRepository: CountryRepository) {
                 .split('-')
                 .joinToString(" ") { word -> word.replaceFirstChar { it.uppercaseChar() } })}
             .toMutableSet()
+    }
+
+    fun saveAll(names: List<Country>): MutableList<Country> {
+        return countryRepository.saveAll(names)
     }
 }

@@ -22,7 +22,7 @@ interface ProductMapper {
     @Mapping(target = "countries", expression = "java(countryService.findOrCreateAll(dto.getCountries_hierarchy()))")
     @Mapping(target = "additives", expression = "java(additiveService.findOrCreateAll(dto.getAdditives_tags()))")
     @Mapping(target = "nutriments", expression = "java(nutrimentService.findOrCreate(dto.getNutriments()))")
-    @Mapping(target = "nutriscore", expression = "java(nutriscoreService.extractAndSaveFromJson(dto.getNutriscore()))")
+    //@Mapping(target = "nutriscore", expression = "java(nutriscoreService.extractAndSaveFromJson(dto.getNutriscore()))")
     fun toEntity(
         dto: ProductDTO,
         @Context tagService: TagService,
@@ -38,5 +38,5 @@ interface ProductMapper {
     @Mapping(target = "brands", source = "name")
     @Mapping(target = "image_url", source = "image_url")
 
-    fun toDto(product: Product): ProductDTO
+    fun toDto(product: Product,): ProductDTO
 }
