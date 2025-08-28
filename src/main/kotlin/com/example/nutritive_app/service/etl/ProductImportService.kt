@@ -7,6 +7,7 @@ import com.example.nutritive_app.service.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+// ETL Pipeline (Lambda) used instead of this
 @Service
 class ProductImportService(
     private val productRepository: ProductRepository,

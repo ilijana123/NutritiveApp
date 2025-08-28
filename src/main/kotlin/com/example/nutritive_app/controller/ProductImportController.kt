@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+
+// ETL Pipeline (Lambda) used instead of this
 @RestController
 @RequestMapping("/import")
 class ProductImportController(

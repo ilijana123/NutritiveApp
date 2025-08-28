@@ -10,6 +10,7 @@ import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.util.zip.GZIPInputStream
 
+// ETL Pipeline (Lambda) used instead of this
 @Component
 class ProductFetcher(
     private val productImportService: ProductImportService,
@@ -24,44 +25,6 @@ class ProductFetcher(
     // For testing remove scheduled annotation and use the endpoint for the product import
     // @Scheduled(cron = "0 0 0 * * MON")
 
-//    fun fetchAndImportProducts() {
-//        println("Starting OpenFoodFacts import...")
-//
-//        try {
-//            val request = HttpRequest.newBuilder()
-//                .uri(URI.create(dataUrl))
-//                .GET()
-//                .build()
-//
-//            val response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream())
-//
-//            if (response.statusCode() != 200) {
-//                println("Failed to fetch data: HTTP ${response.statusCode()}")
-//                return
-//            }
-//
-//            GZIPInputStream(response.body()).bufferedReader().useLines { lines ->
-//                val line = lines.firstOrNull()
-//                if (line != null) {
-//                    try {
-//                        val jsonNode = objectMapper.readTree(line)
-//                        val productJson = jsonNode.get("product") ?: jsonNode // depends on actual format
-//                        val productDto = objectMapper.treeToValue(productJson, ProductDTO::class.java)
-//                        productImportService.import(productDto)
-//                        println("Imported 1 product for testing.")
-//                    } catch (e: Exception) {
-//                        println("Failed to import product: ${e.message}")
-//                    }
-//                } else {
-//                    println("No lines found in file.")
-//                }
-//            }
-//
-//            println("OpenFoodFacts import complete.")
-//        } catch (e: Exception) {
-//            println("Error during OpenFoodFacts import: ${e.message}")
-//        }
-//    }
 
     fun fetchAndImportProducts() {
         println("Starting OpenFoodFacts import...")
