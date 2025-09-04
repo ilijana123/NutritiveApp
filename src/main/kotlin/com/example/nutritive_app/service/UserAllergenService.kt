@@ -13,55 +13,69 @@ class UserAllergenService(
 ) {
 
     fun getUserAllergens(userId: Long): Set<Allergen> {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("User $userId not found") }
+        val user = userRepository.findById(userId).orElseThrow {
+            NoSuchElementException("User $userId not found")
+        }
         return user.allergens
     }
 
     @Transactional
     fun replaceUserAllergens(userId: Long, allergenIds: List<Long>): Set<Allergen> {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("User $userId not found") }
-
+        val user = userRepository.findById(userId).orElseThrow {
+            NoSuchElementException("User $userId not found")
+        }
         val newAllergens = allergenRepository.findAllById(allergenIds).toMutableSet()
+
         user.allergens.clear()
         user.allergens.addAll(newAllergens)
         userRepository.save(user)
+
         return user.allergens
     }
 
     @Transactional
     fun addUserAllergen(userId: Long, allergenId: Long): Set<Allergen> {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("User $userId not found") }
-        val allergen = allergenRepository.findById(allergenId)
-            .orElseThrow { NoSuchElementException("Allergen $allergenId not found") }
+        val user = userRepository.findById(userId).orElseThrow {
+            NoSuchElementException("User $userId not found")
+        }
+        val allergen = allergenRepository.findById(allergenId).orElseThrow {
+            NoSuchElementException("Allergen $allergenId not found")
+        }
 
         user.allergens.add(allergen)
         userRepository.save(user)
+
         return user.allergens
     }
 
     @Transactional
     fun removeUserAllergen(userId: Long, allergenId: Long): Set<Allergen> {
-        val user = userRepository.findById(userId)
-            .orElseThrow { NoSuchElementException("User $userId not found") }
+        val user = userRepository.findById(userId).orElseThrow {
+            NoSuchElementException("User $userId not found")
+        }
+
         user.allergens.removeIf { it.id == allergenId }
         userRepository.save(user)
+
         return user.allergens
     }
 
-    fun getUserAllergensByEmail(email: String): Set<Allergen> =
-        userRepository.findByEmail(email)
-            .allergens
+    fun getUserAllergensByEmail(email: String): Set<Allergen> {
+        val user = userRepository.findByEmail(email)
+            ?: throw NoSuchElementException("User with email $email not found")
+        return user.allergens
+    }
 
     @Transactional
     fun replaceUserAllergensByEmail(email: String, allergenIds: List<Long>): Set<Allergen> {
         val user = userRepository.findByEmail(email)
+            ?: throw NoSuchElementException("User with email $email not found")
         val newAllergens = allergenRepository.findAllById(allergenIds).toMutableSet()
+
         user.allergens.clear()
         user.allergens.addAll(newAllergens)
         userRepository.save(user)
+
         return user.allergens
     }
 }
