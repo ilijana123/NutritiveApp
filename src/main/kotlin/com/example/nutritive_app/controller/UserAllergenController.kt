@@ -1,7 +1,9 @@
 package com.example.nutritive_app.controller
 
+import com.example.nutritive_app.dto.AllergenDTO
 import com.example.nutritive_app.dto.request.UpdateUserAllergensRequest
 import com.example.nutritive_app.entity.Allergen
+import com.example.nutritive_app.mapper.toDtoSet
 import com.example.nutritive_app.service.UserAllergenService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,8 +15,10 @@ class UserAllergenController(
 ) {
 
     @GetMapping
-    fun list(@PathVariable userId: Long): ResponseEntity<Set<Allergen>> =
-        ResponseEntity.ok(service.getUserAllergens(userId))
+    fun list(@PathVariable userId: Long): ResponseEntity<Set<AllergenDTO>> {
+        val allergens = service.getUserAllergens(userId)
+        return ResponseEntity.ok(allergens.toDtoSet())
+    }
 
     @PutMapping
     fun replace(
